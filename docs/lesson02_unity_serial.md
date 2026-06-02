@@ -4,7 +4,7 @@
 
 ESP32 から USB Serial で PC へ値を送り、Unity で受信してオブジェクト操作に使います。
 
-## 内容
+## ゴール
 
 - ESP32 から Serial 通信で値を送る
 - Unity で SerialPort を開く
@@ -12,10 +12,20 @@ ESP32 から USB Serial で PC へ値を送り、Unity で受信してオブジ�
 
 ## 使用するもの
 
-- ESP32 開発ボード 1台
-- USB ケーブル 1本
+- XIAO ESP32C6
+- USB ケーブル
 - タクトスイッチ
 - Unity
+
+## 開くフォルダ
+
+```text
+firmware/esp32_unity_input/lesson02_serial_button/
+```
+
+## 配線
+
+作成予定。
 
 ## Serial データ形式
 
@@ -30,7 +40,7 @@ Unity 側では改行単位で読み取り、`button=1` のときにオブジェ
 
 ## 手順
 
-1. `firmware/lesson02_unity_serial/lesson02_unity_serial.ino` を ESP32 に書き込む
+1. `firmware/esp32_unity_input/lesson02_serial_button/` を PlatformIO で開く
 2. Serial Monitor で `button=0` または `button=1` が表示されることを確認する
 3. Serial Monitor を閉じる
 4. Unity プロジェクト `unity/Esp32UnityWorkshop/` を開く
@@ -43,3 +53,6 @@ Unity 側では改行単位で読み取り、`button=1` のときにオブジェ
 - ESP32 と Unity の baud rate がどちらも `115200`
 - ポート名が OS に合わせて正しい
 
+## トラブルシューティング
+
+[トラブルシューティング](troubleshooting.md) を参照してください。

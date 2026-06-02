@@ -1,10 +1,10 @@
-# 第3回：ESP-NOW で遊ぶ（下書き）
+# 第3回：ESP-NOW で遊ぶ
 
 ## 目的
 
 送信側 ESP32 から受信側 ESP32 へ ESP-NOW で値を送り、受信側 ESP32 から USB Serial で Unity に渡します。
 
-## 内容
+## ゴール
 
 - ESP-NOW の送信側プログラムを作る
 - ESP-NOW の受信側プログラムを作る
@@ -13,10 +13,21 @@
 
 ## 使用するもの
 
-- ESP32 開発ボード 2台
+- XIAO ESP32C6 2台
 - USB ケーブル 2本
 - タクトスイッチ
 - Unity
+
+## 開くフォルダ
+
+| 役割 | 開くフォルダ |
+|---|---|
+| 送信側 | `firmware/esp32_unity_input/lesson03_espnow_play/sender/` |
+| 受信側 | `firmware/esp32_unity_input/lesson03_espnow_play/receiver/` |
+
+## 配線
+
+作成予定。
 
 ## 構成
 
@@ -54,3 +65,6 @@ button=1
 - 送信側と受信側の Wi-Fi channel が一致している
 - Unity が受信側 ESP32 の Serial ポートを開いている
 
+## トラブルシューティング
+
+[トラブルシューティング](troubleshooting.md) を参照してください。
