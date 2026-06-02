@@ -41,6 +41,8 @@ Unity
 
 XIAO ESP32C6のPlatformIO設定はSeeed Studio公式Wikiの「XIAO ESP32C6 with PlatformIO」を基準にしています。platformにはSeeed提供のカスタムプラットフォームを使用します。
 
+PlatformIOで「Configuring project: XX%」と表示されて止まっているように見える場合があります。初回はSeeedのプラットフォームをダウンロードするため数分かかるので、キャンセルせずに待ってください。
+
 詳細は [docs/parts_list.md](docs/parts_list.md) を参照してください。
 
 ## リポジトリ構成
