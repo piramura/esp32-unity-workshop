@@ -24,18 +24,19 @@ ESP32を使った無線入力デバイスです。
 受信側ESP32
   ↓ USB Serial
 Unity
+```
 
 ## 必要機材
 
-- ESP32 開発ボード 2台
-- USB ケーブル 2本
+- ESP32 開発ボード 1台（第3回で使うもう1台は講師が用意します）
+- USB ケーブル 1本（第3回で使うもう1本は講師が用意します）
 - ブレッドボード
 - ジャンパーワイヤ
 - LED
 - 抵抗 220Ω 程度
 - タクトスイッチ
 - PC
-- Arduino IDE または PlatformIO
+- PlatformIO（推奨）
 - Unity
 
 詳細は [docs/parts_list.md](docs/parts_list.md) を参照してください。
@@ -53,8 +54,11 @@ Unity
 │   └── troubleshooting.md
 ├── firmware/
 │   ├── lesson01_microcontroller_basic/
-│   ├── lesson02_unity_serial/
-│   └── lesson03_espnow_play/
+│   └── esp32_unity_input/
+│       ├── lesson02_serial_button/
+│       └── lesson03_espnow_play/
+│           ├── sender/
+│           └── receiver/
 ├── unity/
 │   └── Esp32UnityWorkshop/
 └── images/
