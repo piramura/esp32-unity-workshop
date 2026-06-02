@@ -1,44 +1,17 @@
 # 第1回：マイコンのみ
 
-## 目的
+## この回のゴール
+ESP32にプログラムを書き込み、基本的な動作確認を行う。
 
-ESP32 の基本操作を確認し、LED 出力、ボタン入力、Serial Monitor 出力を扱えるようにします。
-
-## ゴール
-
-- ESP32 にプログラムを書き込める
-- LED を点滅させられる
-- ボタン入力を読み取れる
-- Serial Monitor に値を表示できる
-
-## 使用するもの
-
-- XIAO ESP32C6
-- USB ケーブル
-- LED
-- 抵抗 220Ω 程度
-- タクトスイッチ
-- ブレッドボード
-- ジャンパーワイヤ
-
-## 開くフォルダ
-
-```text
-firmware/lesson01_microcontroller_basic/
-```
-
-## 配線
-
-作成予定。
+## PlatformIOで開くフォルダ
+`firmware/lesson01_microcontroller_basic/`
 
 ## 手順
+1. VSCodeでフォルダを開く
+2. PlatformIOが読み込まれるのを待つ
+3. Buildする
+4. Uploadする
+5. Serial MonitorまたはLEDで動作を確認する
 
-作成予定。
-
-## 確認ポイント
-
-作成予定。
-
-## トラブルシューティング
-
-[トラブルシューティング](troubleshooting.md) を参照してください。
+##
+ここに第一回の内容をお願いします。写真等はimagesを活用してみてください。
