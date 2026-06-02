@@ -71,6 +71,17 @@ PlatformIOで「Configuring project: XX%」と表示されて止まっている�
     └── lesson03/
 ```
 
+## PlatformIOで開くフォルダ
+
+PlatformIOでは、リポジトリ直下ではなく `platformio.ini` があるフォルダを開いてください。
+
+| 回 | 開くフォルダ | 内容 |
+|---|---|---|
+| 第1回 | `firmware/lesson01_microcontroller_basic/` | マイコン基礎 |
+| 第2回 | `firmware/esp32_unity_input/lesson02_serial_button/` | UnityへSerial送信 |
+| 第3回 送信側 | `firmware/esp32_unity_input/lesson03_espnow_play/sender/` | ESP-NOW送信 |
+| 第3回 受信側 | `firmware/esp32_unity_input/lesson03_espnow_play/receiver/` | ESP-NOW受信、UnityへSerial送信 |
+
 ## 教材
 
 - [第1回：マイコンのみ](docs/lesson01_microcontroller_basic.md)
