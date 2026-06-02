@@ -5,7 +5,7 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("Hello from XIAO ESP32C6");
+  Serial.println("Hello from XIAO ESP32C6 in Lesson 2");
   delay(1000);
 }
 
