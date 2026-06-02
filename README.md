@@ -78,3 +78,14 @@ PlatformIOで「Configuring project: XX%」と表示されて止まっている�
 - [第3回：ESP-NOW で遊ぶ](docs/lesson03_espnow_play.md)
 - [部品表](docs/parts_list.md)
 - [トラブルシューティング](docs/troubleshooting.md)
+
+## 参考資料・公式ドキュメント
+
+本教材では、できるだけ公式ドキュメントを基準にしています。
+
+| 資料 | 用途 | URL |
+|---|---|---|
+| Seeed Studio Wiki: XIAO ESP32C6 with PlatformIO | XIAO ESP32C6用のPlatformIO設定 | https://wiki.seeedstudio.com/ja/xiao_esp32c6_with_platform_io/ |
+| PlatformIO Documentation | PlatformIOプロジェクト構成、Build / Upload / Serial Monitor | https://docs.platformio.org/ |
+| Arduino Documentation | Serial、digitalRead、digitalWrite などの基本API | https://docs.arduino.cc/ |
+| Espressif ESP-NOW Documentation | ESP-NOW通信の仕様・実装確認 | https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_now.html |
