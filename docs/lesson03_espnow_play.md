@@ -1,56 +1,181 @@
-# 第3回：ESP-NOW で遊ぶ（下書き）
+# 第3回：ESP-NOWで無線早押しクイズ
 
-## 目的
+## ゴール
 
-送信側 ESP32 から受信側 ESP32 へ ESP-NOW で値を送り、受信側 ESP32 から USB Serial で Unity に渡します。
+参加者のESP32を無線早押しボタン（sender）として使い、講師が用意したESP32（receiver）を通してUnity上の早押しクイズに参加できるようにします。
 
-## 内容
+第2回では、ESP32とPCをUSB Serialで有線接続しました。
+第3回では、その入力部分をESP-NOWで無線化し、会場内の参加者全員が1台の講師用receiverへ接続します。
 
-- ESP-NOW の送信側プログラムを作る
-- ESP-NOW の受信側プログラムを作る
-- 受信側 ESP32 から Unity へ Serial 送信する
-- Unity 上で無線入力デバイスとして遊べるデモを作る
+## 全体構成
 
-## 使用するもの
-
-- ESP32 開発ボード 2台
-- USB ケーブル 2本
-- タクトスイッチ
-- Unity
-
-## 構成
+### 最小構成（動作確認用）
 
 ```text
-送信側 ESP32
-  ボタン入力
+sender 1台
   ↓ ESP-NOW
-受信側 ESP32
+講師用 receiver 1台
   ↓ USB Serial
-PC / Unity
-  オブジェクト操作
+Unity
 ```
 
-## Serial データ形式
-
-受信側 ESP32 から Unity へ、1行ごとに値を送ります。
+### 本番構成（クイズ実施時）
 
 ```text
-button=0
-button=1
+参加者A sender
+参加者B sender
+参加者C sender
+  ↓ ESP-NOW（それぞれ）
+講師用 receiver 1台
+  ↓ USB Serial
+Unity
+  早押しクイズを判定
 ```
 
-## 手順
+## 役割
 
-1. 受信側 ESP32 の MAC アドレスを確認する
-2. 送信側プログラムに受信側 MAC アドレスを設定する
-3. 送信側 ESP32 に送信用スケッチを書き込む
-4. 受信側 ESP32 に受信用スケッチを書き込む
-5. 受信側 ESP32 を Unity を動かす PC に USB 接続する
-6. Unity を Play して、送信側ボタンでデモを操作できることを確認する
+| 役割 | 担当 | 内容 |
+|---|---|---|
+| sender | 参加者 | 自分のESP32を無線早押しボタンとして使う |
+| receiver | 講師 | ESP-NOWとUSB Serialのブリッジとして使う |
+| Unity | 講師PC | 早押しクイズの判定と表示を行う |
 
-## 確認ポイント
+receiver は講師が事前に準備します。参加者がreceiverを書き込む必要はありません。
 
-- 送信側に設定した MAC アドレスが受信側 ESP32 のもの
-- 送信側と受信側の Wi-Fi channel が一致している
-- Unity が受信側 ESP32 の Serial ポートを開いている
+## データ形式
 
+### sender → receiver（ESP-NOW）
+
+第3回では、誰が押したかを識別するために、次の形式でデータを送ります。
+
+```text
+player=1,button=1
+player=2,button=1
+```
+
+- `player` は参加者番号（書き込み時に各自で設定します）
+- `button=1` はボタンが押されたことを表します
+- Unity側は最初に届いた `player` を勝者として扱います
+
+第2回の `button=0` / `button=1` との違いは `player=N,` が先頭に付く点です。
+receiverはこのデータをそのままUSB SerialでUnityへ流します。
+
+### receiver → sender（発展）
+
+発展として、Unityが勝者を決めた後、receiverからsenderへ次の形式でLED命令を返します。
+
+```text
+led=1
+led=0
+```
+
+勝者のsenderだけLEDを光らせることで、無線フィードバックができます。
+
+## receiverについて
+
+receiverは講師用ESP32です。参加者はreceiverを操作する必要はありません。
+
+receiverは以下を行います。
+
+- 参加者のsenderからESP-NOWで届いた入力を、USB Serial経由でUnityへ送る
+- 発展として、Unityから届いた `winner=ID` や `led=1` のような命令をESP-NOWでsenderへ返す
+
+当日、receiverはUnityを動かす講師PCにUSB接続された状態で使います。
+
+## 当日の進行手順
+
+### 講師が事前に行うこと
+
+1. `firmware/esp32_unity_input/lesson03_espnow_play/receiver/` をPlatformIOで開く
+2. receiverを書き込む
+3. Serial Monitorでreceiverの起動ログとMACアドレスを確認する
+4. Unityプロジェクトを準備する
+5. receiverのMACアドレスを参加者全員へ共有する
+
+### 参加者が行うこと
+
+1. `firmware/esp32_unity_input/lesson03_espnow_play/sender/` をPlatformIOで開く
+2. 自分の `player` IDを設定する（講師に番号を確認する）
+3. 講師用receiverのMACアドレスを設定する
+4. 自分のESP32へ書き込む
+5. ボタンを押してUnity画面で反応することを確認する
+
+## MACアドレスの設定
+
+ESP-NOWでは、送信先のESP32をMACアドレスで指定します。
+
+receiverのMACアドレスは次のような形式で表示されます。
+
+```text
+AA:BB:CC:DD:EE:FF
+```
+
+講師から共有されたMACアドレスをsenderのコードに設定してから書き込んでください。
+1文字でも違うとESP-NOWは届きません。`0` と `O`、`1` と `I` の見間違いに注意してください。
+
+## 早押しクイズの流れ
+
+```text
+1. Unityが受付開始状態になる
+2. 参加者がsenderのボタンを押す
+3. receiverが player=ID,button=1 をUnityへ送る
+4. Unityが最初に届いたplayerを勝者として記録する
+5. Unity画面に勝者を表示する
+6. （発展）勝者のsenderだけLEDを光らせる
+```
+
+## 動作確認の流れ
+
+### 1. sender → receiver の通信を確認する
+
+Unityを使わずにESP-NOW通信だけを先に確認します。
+
+1. receiverをPCにUSB接続する
+2. receiverのSerial Monitorを開く
+3. senderのボタンを押す
+4. receiver側に `player=N,button=1` が表示されることを確認する
+
+### 2. receiver → Unity への通信を確認する
+
+1. receiverのSerial Monitorを閉じる
+2. `unity/Esp32UnityWorkshop/` を開く
+3. Unity側でreceiverのSerial ポート名を設定する
+4. Unity を Play する
+5. senderのボタンを押す
+6. Unity上で反応することを確認する
+
+## 発展
+
+### 勝者senderへLEDを返す
+
+Unity側で勝者が決まったら `led=1` をSerial送信します。
+receiverが受け取り、ESP-NOWで該当senderへ転送します。
+senderはLEDを点灯させます。
+
+### 複数senderのID管理
+
+参加者ごとに `player` IDを割り当てます。
+書き込み前に各自のIDを確認し、コードに設定してから書き込みます。
+
+### たけのこニョッキ風ゲームへの応用
+
+複数のsenderを使い、参加者がボタンを押した順番やタイミングをUnity側で判定します。
+ESP32側はボタン入力とLED表示を担当し、ゲームルールはUnity側に持たせます。
+
+### 無線ボタンのケースを作る
+
+Fusion 360 や Bambu Studio を使って、ESP32とボタンが入るケースを3Dプリントすると、持ちやすい無線早押しデバイスになります。
+
+## 詰まりやすい点
+
+- senderを書き込む前に、receiverのMACアドレスが設定されているか確認する
+- MACアドレスの桁や区切りを間違えていないか確認する
+- receiverをUnityを動かすPCにUSB接続しているか確認する
+- Serial Monitorを開いたままUnityをPlayしていないか確認する
+- senderの電源が入っているか確認する
+- player IDが正しく設定されているか確認する
+- 第2回のUnity Serial受信がまだ動いていない場合は、先に第2回を完成させる
+
+## トラブルシューティング
+
+[トラブルシューティング](troubleshooting.md) を参照してください。
