@@ -9,27 +9,33 @@ ESP32を使って、Unityと連携する入力デバイスを作るための講�
 | 回 | テーマ | この回でできるようになること |
 |---|---|---|
 | 第1回 | マイコンのみ | ESP32にプログラムを書き込み、LEDやボタンを動かせる |
-| 第2回 | Unityと連携 | ESP32の入力をUnityに送り、Unity上のオブジェクトを操作できる |
-| 第3回 | ESP-NOWで遊ぶ | ESP32同士を無線通信させ、無線入力デバイスとして使える |
+| 第2回 | Unity ⇄ ESP32 の有線双方向通信 | ESP32からUnityへ `button=0/1`、UnityからESP32へ `led=0/1` で双方向制御できる |
+| 第3回 | ESP-NOWで無線早押しクイズ | 参加者のESP32を無線早押しボタンとして使い、Unity上で早押しクイズに参加できる |
 
 ## 最終的に作るもの
 
-ESP32を使った無線入力デバイスです。
+ESP32を使った無線早押しクイズシステムです。
 
-第3回では、送信側ESP32から受信側ESP32へESP-NOWで入力を送り、受信側ESP32からUnityへUSB Serialで値を渡します。
+第2回では、ESP32とUnityをUSB Serialで双方向に接続します。ESP32からUnityへ `button=0` / `button=1` を送り、UnityからESP32へ `led=0` / `led=1` を返します。
+
+第3回では、参加者のESP32を無線早押しボタン（sender）として使い、講師が用意したESP32（receiver）を経由してUnity上の早押しクイズに参加します。
 
 ```txt
-送信側ESP32
+参加者のESP32（sender）
+  ボタンを押す
   ↓ ESP-NOW
-受信側ESP32
+講師用ESP32（receiver）
   ↓ USB Serial
 Unity
+  早押しクイズを判定
 ```
+
+発展として、Unityの判定結果を講師用receiver経由で勝者のsenderへ返し、LEDを光らせます。
 
 ## 必要機材
 
-- ESP32 開発ボード 1台（第3回で使うもう1台は講師が用意します）
-- USB ケーブル 1本（第3回で使うもう1本は講師が用意します）
+- ESP32 開発ボード 1台（第3回のreceiverは講師が用意します）
+- USB ケーブル 1本（第3回のreceiverへの接続ケーブルは講師が用意します）
 - ブレッドボード
 - ジャンパーワイヤ
 - LED
@@ -44,6 +50,16 @@ XIAO ESP32C6のPlatformIO設定はSeeed Studio公式Wikiの「XIAO ESP32C6 with 
 PlatformIOで「Configuring project: XX%」と表示されて止まっているように見える場合があります。初回はSeeedのプラットフォームをダウンロードするため数分かかるので、キャンセルせずに待ってください。
 
 詳細は [docs/parts_list.md](docs/parts_list.md) を参照してください。
+
+## Unityプロジェクト
+
+第2回と第3回では、同じUnityプロジェクトを使います。
+
+```text
+unity/Esp32UnityWorkshop/
+```
+
+第2回は、ESP32からPCへUSB Serialで直接値を送ります。第3回は、送信側ESP32から受信側ESP32へESP-NOWで値を送り、受信側ESP32から同じUnityプロジェクトへUSB Serialで値を送ります。
 
 ## リポジトリ構成
 
@@ -75,18 +91,20 @@ PlatformIOで「Configuring project: XX%」と表示されて止まっている�
 
 PlatformIOでは、リポジトリ直下ではなく `platformio.ini` があるフォルダを開いてください。
 
+第2回と第3回は、次のフォルダを間違えないように確認してからBuild / Uploadします。
+
 | 回 | 開くフォルダ | 内容 |
 |---|---|---|
 | 第1回 | `firmware/lesson01_microcontroller_basic/` | マイコン基礎 |
 | 第2回 | `firmware/esp32_unity_input/lesson02_serial_button/` | UnityへSerial送信 |
-| 第3回 送信側 | `firmware/esp32_unity_input/lesson03_espnow_play/sender/` | ESP-NOW送信 |
-| 第3回 受信側 | `firmware/esp32_unity_input/lesson03_espnow_play/receiver/` | ESP-NOW受信、UnityへSerial送信 |
+| 第3回（参加者） | `firmware/esp32_unity_input/lesson03_espnow_play/sender/` | 無線早押しボタン |
+| 第3回（講師用） | `firmware/esp32_unity_input/lesson03_espnow_play/receiver/` | ESP-NOW / USB Serial ブリッジ |
 
 ## 教材
 
 - [第1回：マイコンのみ](docs/lesson01_microcontroller_basic.md)
 - [第2回：Unity と連携](docs/lesson02_unity_serial.md)
-- [第3回：ESP-NOW で遊ぶ](docs/lesson03_espnow_play.md)
+- [第3回：ESP-NOWで無線早押しクイズ](docs/lesson03_espnow_play.md)
 - [部品表](docs/parts_list.md)
 - [トラブルシューティング](docs/troubleshooting.md)
 
