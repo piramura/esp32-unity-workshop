@@ -24,11 +24,11 @@
 - macOS では `/dev/cu.usbserial-*` または `/dev/cu.usbmodem*` を使う
 - Windows では `COM3` のような COM ポート名を使う
 
-## ESP-NOW が届かない
+## 第3回: ESP-NOW が届かない
 
-- 送信側に設定した MAC アドレスが受信側 ESP32 のものか確認する
-- 送信側と受信側の Wi-Fi channel を一致させる
-- 受信側 ESP32 の電源が入っているか確認する
+- 参加者senderに設定した MAC アドレスが講師用receiverのものか確認する
+- sender と receiver の Wi-Fi channel を一致させる
+- 講師用receiverが講師PCにUSB接続され、電源が入っているか確認する
 - ESP32 同士を近づけて確認する
 
 ## Unity のオブジェクトが動かない

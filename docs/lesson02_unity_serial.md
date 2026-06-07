@@ -1,4 +1,4 @@
-# 第2回：Unity と連携
+# 第2回：Unity ⇄ ESP32 のUSB Serial双方向通信
 
 ## ゴール
 
@@ -63,7 +63,7 @@ unity/Esp32UnityWorkshop/
 ```
 
 第2回では、ESP32 と Unity を USB Serial で直接つなぎます。
-第3回では、受信側 ESP32 が ESP-NOW と USB Serial のブリッジになりますが、Unity 側の Serial 受信処理は第2回と同じものを使います。
+第3回では、講師用 receiver が ESP-NOW と USB Serial のブリッジになりますが、Unity 側の Serial 受信処理は第2回と同じものを使います。
 
 ## 通信の考え方
 
@@ -226,7 +226,7 @@ button=1 のとき
 ESP32 ⇄ USB Serial ⇄ Unity
 
 第3回：
-送信側ESP32 ⇄ ESP-NOW ⇄ 受信側ESP32 ⇄ USB Serial ⇄ Unity
+参加者sender ⇄ ESP-NOW ⇄ 講師用receiver ⇄ USB Serial ⇄ Unity
 
 Unity 側は第2回で作った Serial 受信処理を使い回します。
 
