@@ -9,7 +9,7 @@ ESP32を使って、Unityと連携する入力デバイスを作るための講�
 | 回 | テーマ | この回でできるようになること |
 |---|---|---|
 | 第1回 | マイコンのみ | ESP32にプログラムを書き込み、LEDやボタンを動かせる |
-| 第2回 | Unity ⇄ ESP32 の有線双方向通信 | ESP32からUnityへ `button=0/1`、UnityからESP32へ `led=0/1` で双方向制御できる |
+| 第2回 | Unity ⇄ ESP32 のUSB Serial双方向通信 | ESP32からUnityへ `button=0/1`、UnityからESP32へ `led=0/1` で双方向制御できる |
 | 第3回 | ESP-NOWで無線早押しクイズ | 参加者のESP32を無線早押しボタンとして使い、Unity上で早押しクイズに参加できる |
 
 ## 最終的に作るもの
@@ -59,7 +59,7 @@ PlatformIOで「Configuring project: XX%」と表示されて止まっている�
 unity/Esp32UnityWorkshop/
 ```
 
-第2回は、ESP32からPCへUSB Serialで直接値を送ります。第3回は、送信側ESP32から受信側ESP32へESP-NOWで値を送り、受信側ESP32から同じUnityプロジェクトへUSB Serialで値を送ります。
+第2回は、1台のESP32とPCをUSB Serialでつなぎ、Unityと双方向に値をやり取りします。第3回は、参加者のESP32（sender）から講師用ESP32（receiver）へESP-NOWで値を送り、receiverから同じUnityプロジェクトへUSB Serialで値を送ります。
 
 ## リポジトリ構成
 
@@ -103,7 +103,7 @@ PlatformIOでは、リポジトリ直下ではなく `platformio.ini` がある�
 ## 教材
 
 - [第1回：マイコンのみ](docs/lesson01_microcontroller_basic.md)
-- [第2回：Unity と連携](docs/lesson02_unity_serial.md)
+- [第2回：Unity ⇄ ESP32 のUSB Serial双方向通信](docs/lesson02_unity_serial.md)
 - [第3回：ESP-NOWで無線早押しクイズ](docs/lesson03_espnow_play.md)
 - [部品表](docs/parts_list.md)
 - [トラブルシューティング](docs/troubleshooting.md)
