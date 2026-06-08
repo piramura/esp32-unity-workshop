@@ -215,6 +215,61 @@ button=1 のとき
 
 これにより、ESP32 から Unity へ入力が届いていることと、Unity から ESP32 へ命令を返せていることを同時に確認できます。
 
+## Unityシーン設定手順
+
+`unity/Esp32UnityWorkshop/` を Unity で開き、`Assets/_Contents/Scenes/Esp32SerialDemo.unity` をダブルクリックして読み込みます。
+
+シーンには以下のオブジェクトがあらかじめ配置されています。
+
+| オブジェクト名 | 役割 |
+|---|---|
+| SerialController | Serial通信の送受信を担当する |
+| Lesson2Demo | ボタン入力を受け取り、Cubeの色を変える |
+| ButtonStateCube | 色が変わるCube |
+
+### 1. portName を設定する
+
+1. Hierarchy で `SerialController` を選択する
+2. Inspector の `Esp32SerialController` コンポーネントを確認する
+3. `portName` を ESP32 のポート名に変更する
+   - macOS: `/dev/cu.usbmodem1101` のような形式
+   - Windows: `COM3` のような形式
+4. `baudRate` が `115200` になっていることを確認する
+
+ポート名の調べ方:
+
+- **macOS**: ターミナルで `ls /dev/cu.*` を実行し、ESP32 を抜き差しして増減するものが対象ポート
+- **Windows**: デバイスマネージャー → 「ポート (COM と LPT)」に表示される `COM*` が対象ポート
+- **PlatformIO 共通**: Serial Monitor を開くと上部にポート名が表示される
+
+### 2. Inspector の接続を確認する
+
+Hierarchy で `Lesson2Demo` を選択し、`Lesson02SerialDemo` コンポーネントを確認します。
+
+- `Serial Controller` に `SerialController` が設定されていること
+- `Target Renderer` に `ButtonStateCube` の Renderer が設定されていること
+
+次に `SerialController` を選択し、`Esp32SerialController` コンポーネントの `On Line Received` を確認します。
+
+- `Lesson02SerialDemo.HandleSerialLine` が登録されていること
+
+## 動作確認
+
+### 1. ESP32 の動作を確認する
+
+1. PlatformIO でビルドして ESP32 に書き込む
+2. Serial Monitor を開く（baud rate: `115200`）
+3. ボタンを押していないとき `button=0`、押したとき `button=1` が表示されることを確認する
+4. **Serial Monitor を閉じる**（開いたままだと Unity が同じポートを開けない）
+
+### 2. Unity の動作を確認する
+
+1. Unity で Play を開始する
+2. ESP32 のボタンを押す
+3. `ButtonStateCube` の色が変わることを確認する
+4. ボタンを離すと元の色に戻ることを確認する
+5. ESP32 の内蔵 LED がボタンに連動して変わることを確認する（Unity から `led=1`/`led=0` が届いている証拠）
+
 
 ## 次回とのつながり
 
