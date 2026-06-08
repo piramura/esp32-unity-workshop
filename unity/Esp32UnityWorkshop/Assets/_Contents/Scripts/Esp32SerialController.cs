@@ -1,5 +1,6 @@
 using System;
 using System.IO.Ports;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -21,15 +22,17 @@ public class Esp32SerialController : MonoBehaviour
 
     SerialPort _port;
 
-    void Start()
+    // ReadExisting() で届いたデータを改行まで溜めるバッファ
+    readonly StringBuilder _buffer = new StringBuilder();
+
+    void OnEnable()
     {
-        // Playボタンを押したときにSerialポートを開く
+        // GameObjectが有効になったときにSerialポートを開く
         try
         {
             _port = new SerialPort(portName, baudRate)
             {
                 NewLine = "\n",
-                ReadTimeout = 10,   // 短いタイムアウトで毎フレームノンブロッキングに読む
             };
             _port.Open();
             Debug.Log($"[Esp32SerialController] ポートを開きました: {portName}");
@@ -44,19 +47,36 @@ public class Esp32SerialController : MonoBehaviour
     {
         if (_port == null || !_port.IsOpen) return;
 
-        // 毎フレーム1行読む。読めなければスキップする
+        // 受信バッファにある分をまとめて読む（ブロックしない）
+        string chunk;
         try
         {
-            string line = _port.ReadLine();
-            onLineReceived?.Invoke(line.Trim());
-        }
-        catch (TimeoutException)
-        {
-            // タイムアウトは正常。受信待ちの間は毎フレームここに来る
+            chunk = _port.ReadExisting();
         }
         catch (Exception e)
         {
             Debug.LogWarning($"[Esp32SerialController] 読み取りエラー: {e.Message}");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(chunk)) return;
+
+        _buffer.Append(chunk);
+
+        // バッファ内の完成した行を順番に取り出す
+        while (true)
+        {
+            string buf = _buffer.ToString();
+            int newlineIndex = buf.IndexOf('\n');
+            if (newlineIndex < 0) break;
+
+            string line = buf.Substring(0, newlineIndex).Trim();
+            _buffer.Remove(0, newlineIndex + 1);
+
+            if (line.Length > 0)
+            {
+                onLineReceived?.Invoke(line);
+            }
         }
     }
 
@@ -81,14 +101,16 @@ public class Esp32SerialController : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    void OnDisable()
     {
-        // Playを止めたときにSerialポートを閉じて解放する
+        // GameObjectが無効になったとき（Play停止を含む）にSerialポートを閉じて解放する
         if (_port != null)
         {
             if (_port.IsOpen) _port.Close();
             _port.Dispose();
             _port = null;
         }
+
+        _buffer.Clear();
     }
 }
