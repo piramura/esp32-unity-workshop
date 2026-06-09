@@ -8,9 +8,11 @@
 //
 // 通信仕様:
 //   sender → receiver: player=N,button=1（ESP-NOW）
+//   receiver → sender: led=1 / led=0（ESP-NOW）
 //
 // 配線:
 //   D0 --- ボタン --- GND
+//   D1 --- 抵抗 --- LED --- GND
 
 // ---- 書き込み前にここを確認する ----
 
@@ -26,8 +28,30 @@ uint8_t RECEIVER_MAC[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 // ------------------------------------
 
 const int BUTTON_PIN = D0;
+const int LED_PIN = D1;
 
 int lastButtonState = -1;
+unsigned long lastReadyLogTime = 0;
+bool hasSentButton = false;
+
+void printSenderMacAddress() {
+  Serial.print("[起動] sender MAC アドレス: ");
+  Serial.println(WiFi.macAddress());
+}
+
+void printReadyStatus() {
+  printSenderMacAddress();
+  Serial.print("[起動] receiver MAC 設定済み: ");
+  for (int i = 0; i < 6; i++) {
+    if (i > 0) Serial.print(":");
+    if (RECEIVER_MAC[i] < 0x10) Serial.print("0");
+    Serial.print(RECEIVER_MAC[i], HEX);
+  }
+  Serial.println();
+  Serial.println("[起動] sender 準備完了");
+  Serial.print("[起動] PLAYER_ID = ");
+  Serial.println(PLAYER_ID);
+}
 
 bool isReceiverMacNotSet() {
   for (int i = 0; i < 6; i++) {
@@ -39,21 +63,43 @@ bool isReceiverMacNotSet() {
   return true;
 }
 
+void onDataReceived(const esp_now_recv_info_t *info, const uint8_t *data, int len) {
+  String message = String((char *)data, len);
+  message.trim();
+
+  Serial.print("[受信] ");
+  Serial.println(message);
+
+  if (message == "led=1") {
+    digitalWrite(LED_PIN, HIGH);
+  } else if (message == "led=0") {
+    digitalWrite(LED_PIN, LOW);
+  }
+}
+
 void setup() {
   Serial.begin(115200);
 
   // INPUT_PULLUP: 内蔵プルアップ抵抗を有効にします
   // ボタンを押していないとき HIGH、押したとき LOW になります
   pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
 
   // ESP-NOW を使うには WiFi を STA モードにする必要があります
   // Wi-Fi接続はしませんが、モード設定は必須です
   WiFi.mode(WIFI_STA);
 
+  delay(1500);
+  printSenderMacAddress();
+
   if (isReceiverMacNotSet()) {
-    Serial.println("[エラー] receiver の MAC アドレスが未設定です");
-    Serial.println("        RECEIVER_MAC を講師用 receiver の MAC アドレスに書き換えてください");
-    while (true) delay(1000);
+    while (true) {
+      Serial.println("[エラー] receiver の MAC アドレスが未設定です");
+      Serial.println("        RECEIVER_MAC を講師用 receiver の MAC アドレスに書き換えてください");
+      printSenderMacAddress();
+      delay(2000);
+    }
   }
 
   if (esp_now_init() != ESP_OK) {
@@ -74,12 +120,17 @@ void setup() {
     while (true) delay(1000);
   }
 
-  Serial.println("[起動] sender 準備完了");
-  Serial.print("[起動] PLAYER_ID = ");
-  Serial.println(PLAYER_ID);
+  esp_now_register_recv_cb(onDataReceived);
+
+  printReadyStatus();
 }
 
 void loop() {
+  if (!hasSentButton && millis() - lastReadyLogTime >= 2000) {
+    printReadyStatus();
+    lastReadyLogTime = millis();
+  }
+
   int buttonState = 0;
 
   if (digitalRead(BUTTON_PIN) == LOW) {
@@ -104,6 +155,7 @@ void loop() {
 
       if (result == ESP_OK) {
         Serial.println("[送信] 成功");
+        hasSentButton = true;
       } else {
         Serial.println("[送信] 失敗");
       }

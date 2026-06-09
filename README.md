@@ -34,7 +34,7 @@ Unity
 
 ## 必要機材
 
-- ESP32 開発ボード 1台（第3回のreceiverは講師が用意します）
+- XIAO ESP32C6 1台（第3回のreceiverは講師が用意します）
 - USB ケーブル 1本（第3回のreceiverへの接続ケーブルは講師が用意します）
 - ブレッドボード
 - ジャンパーワイヤ
@@ -42,14 +42,20 @@ Unity
 - 抵抗 220Ω 程度
 - タクトスイッチ
 - PC
-- PlatformIO（推奨）
-- Unity
+- PlatformIO（VS Code拡張として使用）
+- Unity 6000.3.6f1
 
 XIAO ESP32C6のPlatformIO設定はSeeed Studio公式Wikiの「XIAO ESP32C6 with PlatformIO」を基準にしています。platformにはSeeed提供のカスタムプラットフォームを使用します。
 
 PlatformIOで「Configuring project: XX%」と表示されて止まっているように見える場合があります。初回はSeeedのプラットフォームをダウンロードするため数分かかるので、キャンセルせずに待ってください。
 
 詳細は [docs/parts_list.md](docs/parts_list.md) を参照してください。
+
+## 第2回・第3回を始める前の前提
+
+第2回・第3回では、PlatformIO の基本操作（Build / Upload / Serial Monitor）は第1回で確認済みとして進めます。
+
+Unity は [Unity Hub](https://unity.com/download) から `6000.3.6f1` をインストールして使います。別バージョンでも開ける場合がありますが、講習ではこのバージョンを基準にします。
 
 ## Unityプロジェクト
 
@@ -60,6 +66,8 @@ unity/Esp32UnityWorkshop/
 ```
 
 第2回は、1台のESP32とPCをUSB Serialでつなぎ、Unityと双方向に値をやり取りします。第3回は、参加者のESP32（sender）から講師用ESP32（receiver）へESP-NOWで値を送り、receiverから同じUnityプロジェクトへUSB Serialで値を送ります。
+
+Unity Hub で `Open` を選び、`unity/Esp32UnityWorkshop/` フォルダを指定して開きます。初回はインポートに数分かかることがあります。
 
 ## リポジトリ構成
 
@@ -107,6 +115,10 @@ PlatformIOでは、リポジトリ直下ではなく `platformio.ini` がある�
 - [第3回：ESP-NOWで無線早押しクイズ](docs/lesson03_espnow_play.md)
 - [部品表](docs/parts_list.md)
 - [トラブルシューティング](docs/troubleshooting.md)
+
+## ライセンス
+
+このリポジトリは MIT License で公開します。詳細は [LICENSE](LICENSE) を参照してください。
 
 ## 参考資料・公式ドキュメント
 

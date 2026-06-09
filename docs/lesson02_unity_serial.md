@@ -4,6 +4,9 @@
 
 ESP32 と Unity を USB Serial でつなぎ、ESP32 を Unity の有線入出力デバイスとして使います。
 
+この講習では、ファームウェアとUnityスクリプトは完成済みのコードを使います。
+コードを一から書くよりも、書き込み、接続、通信の流れを動かして理解することを重視します。
+
 この回では、ESP32 のボタン入力を Unity に送り、Unity 側で受け取った入力に応じてオブジェクトを変化させます。さらに、Unity から ESP32 へ LED 制御命令を送り返し、Unity からマイコンを制御できることも確認します。
 
 第3回では、この有線通信の考え方を ESP-NOW で無線化します。
@@ -43,6 +46,10 @@ ESP32 は PC に USB 接続します。
 
 ESP32 側は Serial でボタン状態を送り、Unity 側は改行ごとに受信して値を判定します。
 Unity 側は、受け取った入力に応じてオブジェクトを操作し、必要に応じて ESP32 に LED 制御命令を返します。
+
+## XIAO ESP32C6 のピン位置
+
+![XIAO ESP32C6 ピンマップ](../images/lesson02/XIAO_ESP32-C6_front_pinout.png)
 
 ## 使用するPlatformIOフォルダ
 
@@ -116,10 +123,19 @@ led=1
 
 ## ボタン配線
 
-ボタンは、ESP32 の入力ピンと GND をつなぐ形で使います。
+第2回では、ボタンを `D0`、外付け LED を `D1` につなぎます。
+
+| 部品 | ESP32側のピン | つなぎ方 |
+|---|---|---|
+| タクトスイッチ | `D0` | `D0` と `GND` の間につなぐ |
+| LED | `D1` | `D1` → 抵抗 → LED → `GND` の順につなぐ |
 
 ```text
-ESP32 入力ピン ---- タクトスイッチ ---- GND
+ボタン:
+D0 ---- タクトスイッチ ---- GND
+
+LED:
+D1 ---- 抵抗 ---- LED ---- GND
 ```
 
 ESP32 側のプログラムでは、入力ピンを内部プルアップして使います。
@@ -139,15 +155,15 @@ pinMode(BUTTON_PIN, INPUT_PULLUP);
 
 ## LEDについて
 
-第2回では、まず ESP32 の内蔵LEDを使います。
+LED は `D1` に接続します。
 
 外付けLEDを使う場合は、LEDに直接電流を流しすぎないように、抵抗を直列に入れてください。
 
 ```text
-ESP32 出力ピン ---- 抵抗 ---- LED ---- GND
+D1 ---- 抵抗 ---- LED ---- GND
 ```
 
-ただし、第2回の最小構成では配線ミスを減らすため、まずは内蔵LEDを使います。
+LED には向きがあります。長い足を `D1` 側、短い足を `GND` 側にします。
 
 重要なのは、ボタンとLEDを物理的に直結しないことです。
 ボタン入力を ESP32 が読み取り、その結果を Unity に送り、Unity からの命令で ESP32 の LED を制御します。
@@ -219,6 +235,14 @@ button=1 のとき
 
 `unity/Esp32UnityWorkshop/` を Unity で開き、`Assets/_Contents/Scenes/Esp32SerialDemo.unity` をダブルクリックして読み込みます。
 
+Unityプロジェクトを開く手順:
+
+1. Unity Hub を起動する
+2. `Open` を選ぶ
+3. `unity/Esp32UnityWorkshop/` フォルダを選択する
+4. Unity のバージョン選択が出た場合は `6000.3.6f1` を選ぶ
+5. 初回は `Importing` が終わるまで待つ
+
 シーンには以下のオブジェクトがあらかじめ配置されています。
 
 | オブジェクト名 | 役割 |
@@ -232,7 +256,7 @@ button=1 のとき
 1. Hierarchy で `SerialController` を選択する
 2. Inspector の `Esp32SerialController` コンポーネントを確認する
 3. `portName` を ESP32 のポート名に変更する
-   - macOS: `/dev/cu.usbmodem1101` のような形式
+   - macOS: `/dev/cu.usbmodem*` のような形式
    - Windows: `COM3` のような形式
 4. `baudRate` が `115200` になっていることを確認する
 
@@ -241,6 +265,8 @@ button=1 のとき
 - **macOS**: ターミナルで `ls /dev/cu.*` を実行し、ESP32 を抜き差しして増減するものが対象ポート
 - **Windows**: デバイスマネージャー → 「ポート (COM と LPT)」に表示される `COM*` が対象ポート
 - **PlatformIO 共通**: Serial Monitor を開くと上部にポート名が表示される
+
+![SerialController の Inspector](../images/lesson02/unity_serial_controller_inspector.png)
 
 ### 2. Inspector の接続を確認する
 
@@ -268,8 +294,15 @@ Hierarchy で `Lesson2Demo` を選択し、`Lesson02SerialDemo` コンポーネ�
 2. ESP32 のボタンを押す
 3. `ButtonStateCube` の色が変わることを確認する
 4. ボタンを離すと元の色に戻ることを確認する
-5. ESP32 の内蔵 LED がボタンに連動して変わることを確認する（Unity から `led=1`/`led=0` が届いている証拠）
+5. `D1` につないだ LED がボタンに連動して変わることを確認する（Unity から `led=1`/`led=0` が届いている証拠）
 
+ボタンを押していない状態:
+
+![Unity Play ボタン未押下](../images/lesson02/unity_play_button_released.png)
+
+ボタンを押した状態:
+
+![Unity Play ボタン押下](../images/lesson02/unity_play_button_pressed.png)
 
 ## 次回とのつながり
 
@@ -289,7 +322,7 @@ Unity 側は第2回で作った Serial 受信処理を使い回します。
 
 1. 第1回で使った PlatformIO の操作を確認する
 2. `firmware/esp32_unity_input/lesson02_serial_button/` を開く
-3. ESP32 とボタンを配線する
+3. ESP32、ボタン、LEDを配線する
 4. Build / Upload する
 5. Serial Monitor で `button=0` / `button=1` を確認する
 6. Serial Monitor を閉じる
