@@ -16,6 +16,24 @@
 - baud rate が `115200` になっているか確認する
 - ESP32 のプログラムが `Serial.begin(115200)` を実行しているか確認する
 - 正しいポートを開いているか確認する
+- XIAO ESP32C6 では `platformio.ini` に USB CDC 設定が入っているか確認する
+
+```ini
+build_flags =
+  -DARDUINO_USB_MODE=1
+  -DARDUINO_USB_CDC_ON_BOOT=1
+```
+
+## XIAO ESP32C6 をリセットすると Serial Monitor が閉じる
+
+正常な挙動です。リセット時に USB Serial が一瞬切断されるため、PC側の Serial Monitor がポートを閉じることがあります。
+
+1. Serial Monitor を閉じる
+2. 数秒待つ
+3. ポートを選び直す
+4. Serial Monitor を開き直す
+
+macOS では `/dev/tty.usbmodem*` ではなく `/dev/cu.usbmodem*` を使います。
 
 ## Unity が Serial ポートを開けない
 
