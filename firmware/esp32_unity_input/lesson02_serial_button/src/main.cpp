@@ -8,21 +8,24 @@
 //
 // 配線:
 //   D0 --- ボタン --- GND
+//   D1 --- 抵抗 --- LED --- GND
 //   D0 は XIAO ESP32C6 上のピン名です。
 //   ボタンを D0 と GND の間につなぎます。
+//   LED は D1 から抵抗を通して GND へつなぎます。
 
 // ボタン入力ピン（XIAO ESP32C6 のピン名）
 const int BUTTON_PIN = D0;
+const int LED_PIN = D1;
 
 int lastButtonState = -1;
 
 void setup() {
   Serial.begin(115200);
 
-  // LED_BUILTIN は Unity から届いた命令だけで制御します
+  // LED は Unity から届いた命令だけで制御します
   // ボタン状態には直接連動しません
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
 
   // INPUT_PULLUP: 内蔵プルアップ抵抗を有効にします
   // これにより、ボタンを押していないときは HIGH、押したときは LOW になります
@@ -61,9 +64,9 @@ void loop() {
     line.trim(); // 前後の空白・改行を除去
 
     if (line == "led=1") {
-      digitalWrite(LED_BUILTIN, HIGH);
+      digitalWrite(LED_PIN, HIGH);
     } else if (line == "led=0") {
-      digitalWrite(LED_BUILTIN, LOW);
+      digitalWrite(LED_PIN, LOW);
     }
     // 不明な文字列は無視する
   }
