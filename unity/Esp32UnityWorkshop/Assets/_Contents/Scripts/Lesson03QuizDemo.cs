@@ -8,6 +8,9 @@ using TMPro;
 /// </summary>
 public class Lesson03QuizDemo : MonoBehaviour
 {
+    [Header("接続")]
+    public Esp32SerialController serialController;
+
     [Header("表示テキスト")]
     public TextMeshProUGUI winnerText;
 
@@ -50,6 +53,7 @@ public class Lesson03QuizDemo : MonoBehaviour
         // 最初の勝者として記録し、テキストに表示する
         _decided = true;
         ShowMessage(winnerMessagePrefix + playerNumber);
+        serialController?.WriteLine("winner=" + playerNumber);
     }
 
     /// <summary>
@@ -60,6 +64,7 @@ public class Lesson03QuizDemo : MonoBehaviour
     {
         _decided = false;
         ShowMessage(waitingMessage);
+        serialController?.WriteLine("clear_leds");
     }
 
     // winnerText にメッセージを表示する。未設定でも落ちない
