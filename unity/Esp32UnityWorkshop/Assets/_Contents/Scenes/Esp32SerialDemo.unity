@@ -608,8 +608,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89cd3e94ae25744af952a8d35259d9fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Esp32SerialController
-  portName: /dev/cu.usbmodem1101
+  portName: /dev/cu.usbmodem101
   baudRate: 115200
+  warmupDelay: 1
+  reconnectInterval: 1
   onLineReceived:
     m_PersistentCalls:
       m_Calls:
