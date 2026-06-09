@@ -4,7 +4,7 @@
 
 | 部品 | 数量 | 用途 |
 |---|---:|---|
-| ESP32 開発ボード | 1 | 第2回では有線入出力デバイス、第3回では sender |
+| XIAO ESP32C6 | 1 | 第2回では有線入出力デバイス、第3回では sender |
 | USB ケーブル | 1 | ESP32 書き込み、第2回のUSB Serial通信、第3回のsender給電 |
 | PC | 1 | ESP32 書き込み、Unity 実行 |
 | ブレッドボード | 1 | 回路作成 |
@@ -17,7 +17,7 @@
 
 | 部品 | 数量 | 用途 |
 |---|---:|---|
-| ESP32 開発ボード | 1 | receiver。ESP-NOW / USB Serial ブリッジ |
+| XIAO ESP32C6 | 1 | receiver。ESP-NOW / USB Serial ブリッジ |
 | USB ケーブル | 1 | receiver と講師PCの接続 |
 | 講師PC | 1 | Unity 早押しクイズ、receiver の Serial 受信 |
 
@@ -28,6 +28,8 @@
 | PlatformIO | ESP32 ファームウェアの書き込み。推奨環境 |
 | Unity | Serial 通信の受信、デモ実行 |
 | USB Serial ドライバ | ESP32 が認識されない場合に使用 |
+
+この教材は XIAO ESP32C6 で動作確認しています。他のESP32ボードはピン番号、USB Serial設定、PlatformIOの `board` 設定が異なるため動作確認外です。
 
 ## あると便利
 

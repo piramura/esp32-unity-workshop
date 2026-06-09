@@ -65,7 +65,8 @@ Serial Monitor に上記が表示されたまま動かなくなります。`RECE
 
 - 参加者senderに設定した MAC アドレスが講師用receiverのものか確認する
 - `RECEIVER_MAC` がデフォルト値 `{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}` のままになっていないか確認する
-- sender と receiver の Wi-Fi channel を一致させる
+- sender と receiver の Wi-Fi channel が合っているか確認する。第3回のコードでは `channel = 0` で現在のチャンネルを使う
+- 会場Wi-Fiが混んでいる場合は、まず sender と receiver を近づけて1台ずつ確認する
 - 講師用receiverが講師PCにUSB接続され、電源が入っているか確認する
 - ESP32 同士を近づけて確認する
 
@@ -73,6 +74,7 @@ Serial Monitor に上記が表示されたまま動かなくなります。`RECE
 
 - `PLAYER_ID` が参加者全員で同じ番号になっていないか確認する
 - 各参加者が異なる `PLAYER_ID` を設定しているか確認する
+- 第3回のreceiverは最大16人分の `PLAYER_ID` を記録する
 - receiver の Serial Monitor で `player=N,button=1` の `N` が参加者ごとに異なることを確認する
 
 ## Unity のオブジェクトが動かない

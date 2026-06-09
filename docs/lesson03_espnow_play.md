@@ -4,6 +4,9 @@
 
 参加者のESP32を無線早押しボタン（sender）として使い、講師が用意したESP32（receiver）を通してUnity上の早押しクイズに参加できるようにします。
 
+この講習では、ファームウェアとUnityスクリプトは完成済みのコードを使います。
+参加者は `PLAYER_ID` と `RECEIVER_MAC` を変更し、通信の流れを動かして理解します。
+
 第2回では、ESP32とPCをUSB Serialで有線接続しました。
 第3回では、その入力部分をESP-NOWで無線化し、会場内の参加者全員が1台の講師用receiverへ接続します。
 
@@ -167,7 +170,7 @@ receiverは以下を行います。
 ### 参加者が行うこと
 
 1. `firmware/esp32_unity_input/lesson03_espnow_play/sender/` をPlatformIOで開く
-2. 自分の `player` IDを設定する（講師に番号を確認する）
+2. 自分の `player` IDを設定する（講師に番号を確認する。通常は `1` から順番に割り当てる）
 3. 講師用receiverのMACアドレスを設定する
 4. 自分のESP32へ書き込む
 5. ボタンを押してUnity画面で反応することを確認する
@@ -247,6 +250,7 @@ const int PLAYER_ID = 1;  // 参加者ごとに異なる番号にする
 ![sender の PLAYER_ID 設定](../images/lesson03/sender_player_id_code.png)
 
 同じ番号を複数人が使うと、勝者の識別ができなくなります。
+receiver は最大16人分の `PLAYER_ID` と sender MAC アドレスを記録できます。
 
 ### 5. sender を書き込む
 
@@ -260,6 +264,10 @@ const int PLAYER_ID = 1;  // 参加者ごとに異なる番号にする
 ## Unityシーン設定手順
 
 `Assets/_Contents/Scenes/Esp32SerialDemo.unity` を開きます。
+
+Unity Hub で `Open` を選び、`unity/Esp32UnityWorkshop/` フォルダを指定して開きます。
+Unity のバージョン選択が出た場合は `6000.3.6f1` を選びます。
+初回は `Importing` が終わるまで待ってください。
 
 シーンには第3回用のUIとスクリプトが配置済みです。
 

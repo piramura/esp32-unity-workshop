@@ -4,6 +4,9 @@
 
 ESP32 と Unity を USB Serial でつなぎ、ESP32 を Unity の有線入出力デバイスとして使います。
 
+この講習では、ファームウェアとUnityスクリプトは完成済みのコードを使います。
+コードを一から書くよりも、書き込み、接続、通信の流れを動かして理解することを重視します。
+
 この回では、ESP32 のボタン入力を Unity に送り、Unity 側で受け取った入力に応じてオブジェクトを変化させます。さらに、Unity から ESP32 へ LED 制御命令を送り返し、Unity からマイコンを制御できることも確認します。
 
 第3回では、この有線通信の考え方を ESP-NOW で無線化します。
@@ -231,6 +234,14 @@ button=1 のとき
 ## Unityシーン設定手順
 
 `unity/Esp32UnityWorkshop/` を Unity で開き、`Assets/_Contents/Scenes/Esp32SerialDemo.unity` をダブルクリックして読み込みます。
+
+Unityプロジェクトを開く手順:
+
+1. Unity Hub を起動する
+2. `Open` を選ぶ
+3. `unity/Esp32UnityWorkshop/` フォルダを選択する
+4. Unity のバージョン選択が出た場合は `6000.3.6f1` を選ぶ
+5. 初回は `Importing` が終わるまで待つ
 
 シーンには以下のオブジェクトがあらかじめ配置されています。
 
