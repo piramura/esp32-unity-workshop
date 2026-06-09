@@ -29,6 +29,7 @@ Recordings/
 # Unity generated files
 *.csproj
 *.sln
+*.slnx
 *.suo
 *.tmp
 *.user
@@ -43,4 +44,3 @@ Recordings/
 
 # Unity crash reports
 sysinfo.txt
-

@@ -104,14 +104,107 @@ receiverは以下を行います。
 
 ESP-NOWでは、送信先のESP32をMACアドレスで指定します。
 
-receiverのMACアドレスは次のような形式で表示されます。
+### 1. receiver の MAC アドレスを確認する
+
+1. receiver を PC に USB 接続する
+2. PlatformIO の Serial Monitor を開く（baud rate: `115200`）
+3. receiver を書き込むと、起動ログと一緒に MAC アドレスが表示される
 
 ```text
-AA:BB:CC:DD:EE:FF
+[起動] receiver MAC アドレス: AA:BB:CC:DD:EE:FF
+[起動] receiver 準備完了。senderからの入力を待っています...
 ```
 
-講師から共有されたMACアドレスをsenderのコードに設定してから書き込んでください。
-1文字でも違うとESP-NOWは届きません。`0` と `O`、`1` と `I` の見間違いに注意してください。
+4. 表示された MAC アドレスをメモする
+
+### 2. sender の RECEIVER_MAC を設定する
+
+sender のコードで `RECEIVER_MAC` を次の形式に変換して設定します。
+
+`AA:BB:CC:DD:EE:FF` → `{0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF}`
+
+コード例（sender の `main.cpp`）:
+
+```cpp
+uint8_t RECEIVER_MAC[] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
+```
+
+1文字でも違うと ESP-NOW は届きません。`0` と `O`、`1` と `I` の見間違いに注意してください。
+
+### 3. PLAYER_ID を設定する
+
+sender のコードで `PLAYER_ID` を参加者番号に設定します。
+
+```cpp
+const int PLAYER_ID = 1;  // 参加者ごとに異なる番号にする
+```
+
+同じ番号を複数人が使うと、勝者の識別ができなくなります。
+
+### 4. sender を書き込む
+
+1. `firmware/esp32_unity_input/lesson03_espnow_play/sender/` を PlatformIO で開く
+2. `RECEIVER_MAC` と `PLAYER_ID` を設定した状態でビルドして書き込む
+
+## Unityシーン設定手順
+
+`Assets/_Contents/Scenes/Esp32SerialDemo.unity` を開きます。
+
+### 1. UI を作成する
+
+1. Hierarchy で右クリック → `UI > Canvas` を作成する（EventSystem も自動で追加される）
+2. Canvas を右クリック → `UI > Text - TextMeshPro` を作成し、名前を `WinnerText` にする
+3. Canvas を右クリック → `UI > Button - TextMeshPro` を作成し、名前を `ResetButton` にする
+
+`WinnerText` の RectTransform を画面中央上部に配置し、フォントサイズを大きめに設定すると見やすくなります。
+
+### 2. Lesson03QuizDemo を配置する
+
+1. Hierarchy で右クリック → `Create Empty` でオブジェクトを作成し、名前を `Lesson3QuizDemo` にする
+2. Inspector で `Add Component` → `Lesson03QuizDemo` を追加する
+3. `Winner Text` に `WinnerText` の TextMeshProUGUI コンポーネントをドラッグする
+
+### 3. イベントを接続する
+
+Hierarchy で `SerialController` を選択し、`Esp32SerialController` の `On Line Received` を確認します。
+
+- `Lesson03QuizDemo.HandleSerialLine` が登録されていること
+- 登録されていない場合は `+` ボタンで追加し、`Lesson3QuizDemo` オブジェクトの `HandleSerialLine` を選択する
+
+次に `ResetButton` を選択し、Button コンポーネントの `On Click` を確認します。
+
+- `Lesson03QuizDemo.ResetQuiz` が登録されていること
+- 登録されていない場合は `+` ボタンで追加し、`Lesson3QuizDemo` オブジェクトの `ResetQuiz` を選択する
+
+### 4. portName を設定する
+
+Hierarchy で `SerialController` を選択し、`portName` を receiver の USB ポート名に変更します。
+
+- macOS: `/dev/cu.usbmodem*` のような形式
+- Windows: `COM3` のような形式
+
+ポート名の調べ方:
+
+- **macOS**: ターミナルで `ls /dev/cu.*` を実行し、receiver を抜き差しして増減するものが対象ポート
+- **Windows**: デバイスマネージャー → 「ポート (COM と LPT)」に表示される `COM*` が対象ポート
+- **PlatformIO 共通**: Serial Monitor を開くと上部にポート名が表示される
+
+## 動作確認
+
+### 1. sender → receiver の通信を確認する
+
+1. receiver を講師 PC に USB 接続する
+2. PlatformIO の Serial Monitor を開く（baud rate: `115200`）
+3. sender のボタンを押す
+4. Serial Monitor に `player=N,button=1` が表示されることを確認する
+5. **Serial Monitor を閉じる**（開いたままだと Unity が同じポートを開けない）
+
+### 2. receiver → Unity の動作を確認する
+
+1. Unity で Play を開始する
+2. sender のボタンを押す
+3. Unity の `WinnerText` に勝者が表示されることを確認する（例: `Winner: Player 1`）
+4. `ResetButton` を押すと `Waiting...` に戻ることを確認する
 
 ## 早押しクイズの流れ
 
