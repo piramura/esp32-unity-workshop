@@ -108,6 +108,10 @@ PlatformIOでは、リポジトリ直下ではなく `platformio.ini` がある�
 - [部品表](docs/parts_list.md)
 - [トラブルシューティング](docs/troubleshooting.md)
 
+## ライセンス
+
+このリポジトリは MIT License で公開します。詳細は [LICENSE](LICENSE) を参照してください。
+
 ## 参考資料・公式ドキュメント
 
 本教材では、できるだけ公式ドキュメントを基準にしています。
