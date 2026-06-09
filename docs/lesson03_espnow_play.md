@@ -9,6 +9,8 @@
 
 ## 全体構成
 
+![ESP-NOW 早押しクイズの全体構成](../images/lesson03/espnow_quiz_overview.svg)
+
 ### 最小構成（動作確認用）
 
 ```text
@@ -42,6 +44,68 @@ Unity
 
 receiver は講師が事前に準備します。参加者がreceiverを書き込む必要はありません。
 
+## sender のピン位置と配線
+
+![XIAO ESP32C6 ピンマップ](../images/lesson02/XIAO_ESP32-C6_front_pinout.png)
+
+![sender の配線図](../images/lesson03/sender_wiring.svg)
+
+参加者の sender は、ボタンを `D0`、LED を `D1` につなぎます。
+
+![sender の実配線](../images/lesson03/sender_wiring_photo.jpg)
+
+| 部品 | ESP32側のピン | つなぎ方 |
+|---|---|---|
+| タクトスイッチ | `D0` | `D0` と `GND` の間につなぐ |
+| LED | `D1` | `D1` → 抵抗 → LED → `GND` の順につなぐ |
+
+```text
+ボタン:
+D0 ---- タクトスイッチ ---- GND
+
+LED:
+D1 ---- 抵抗 ---- LED ---- GND
+```
+
+sender はボタン入力を送信し、receiver から `led=1` / `led=0` が返ってきたら LED を切り替えます。
+Unity が勝者を決めると、勝者の sender だけ LED が光ります。
+
+## 使用するフォルダ
+
+### sender
+
+参加者は次の PlatformIO フォルダを開きます。
+
+```text
+firmware/esp32_unity_input/lesson03_espnow_play/sender/
+```
+
+書き込み前に `PLAYER_ID` と `RECEIVER_MAC` を変更します。
+
+### receiver
+
+講師は次の PlatformIO フォルダを開きます。
+
+```text
+firmware/esp32_unity_input/lesson03_espnow_play/receiver/
+```
+
+receiver は講師PCにUSB接続して使います。
+
+### Unity
+
+第2回と同じ Unity プロジェクトを使います。
+
+```text
+unity/Esp32UnityWorkshop/
+```
+
+開くシーンは次のファイルです。
+
+```text
+Assets/_Contents/Scenes/Esp32SerialDemo.unity
+```
+
 ## データ形式
 
 ### sender → receiver（ESP-NOW）
@@ -60,16 +124,23 @@ player=2,button=1
 第2回の `button=0` / `button=1` との違いは `player=N,` が先頭に付く点です。
 receiverはこのデータをそのままUSB SerialでUnityへ流します。
 
-### receiver → sender（発展）
+### Unity → receiver → sender
 
-発展として、Unityが勝者を決めた後、receiverからsenderへ次の形式でLED命令を返します。
+Unity は最初に届いた `player` を勝者として扱い、receiver へ次の形式で送ります。
+
+```text
+winner=1
+winner=2
+```
+
+receiver は、保存しておいた `player ID` と sender MAC アドレスの対応を使い、該当 sender へLED命令を返します。
 
 ```text
 led=1
 led=0
 ```
 
-勝者のsenderだけLEDを光らせることで、無線フィードバックができます。
+`ResetButton` を押すと Unity から `clear_leds` が送られ、receiver は全 sender に `led=0` を送ります。
 
 ## receiverについて
 
@@ -78,7 +149,8 @@ receiverは講師用ESP32です。参加者はreceiverを操作する必要は�
 receiverは以下を行います。
 
 - 参加者のsenderからESP-NOWで届いた入力を、USB Serial経由でUnityへ送る
-- 発展として、Unityから届いた `winner=ID` や `led=1` のような命令をESP-NOWでsenderへ返す
+- 入力を受け取ったときに `player ID` と sender MAC アドレスの対応を覚える
+- Unityから届いた `winner=N` / `clear_leds` を sender への `led=1` / `led=0` に変換する
 
 当日、receiverはUnityを動かす講師PCにUSB接続された状態で使います。
 
@@ -109,15 +181,46 @@ ESP-NOWでは、送信先のESP32をMACアドレスで指定します。
 1. receiver を PC に USB 接続する
 2. PlatformIO の Serial Monitor を開く（baud rate: `115200`）
 3. receiver を書き込むと、起動ログと一緒に MAC アドレスが表示される
+4. 表示が見えない場合は、Serial Monitor を開き直してから `RST` と `GND` を一瞬つなぐ
+5. 何も表示されない場合は、`platformio.ini` に USB CDC 設定が入っているか確認する
 
 ```text
 [起動] receiver MAC アドレス: AA:BB:CC:DD:EE:FF
 [起動] receiver 準備完了。senderからの入力を待っています...
 ```
 
-4. 表示された MAC アドレスをメモする
+![receiver の MAC アドレス確認](../images/lesson03/receiver_mac_serial_monitor.png)
 
-### 2. sender の RECEIVER_MAC を設定する
+6. 表示された MAC アドレスをメモする
+
+第3回の sender / receiver では、USB Serial に表示するために次の設定を入れています。
+
+```ini
+build_flags =
+  -DARDUINO_USB_MODE=1
+  -DARDUINO_USB_CDC_ON_BOOT=1
+```
+
+### 2. sender の MAC アドレスについて
+
+sender の MAC アドレスを参加者が設定する必要はありません。
+receiver は sender から入力が届いたときに、送信元MACアドレスと `player` ID の対応を自動で覚えます。
+ESP-NOW の受信コールバックには送信元MACアドレスが含まれるため、`player=N,button=1` の中にMACアドレスを入れる必要はありません。
+
+確認用として、sender の起動ログには自分の MAC アドレスが表示されます。
+
+```text
+[起動] sender MAC アドレス: 11:22:33:44:55:66
+```
+
+![sender の MAC アドレス確認](../images/lesson03/sender_mac_serial_monitor.png)
+
+`RECEIVER_MAC` が未設定でも、この sender MAC は先に表示されます。
+未設定中はエラーメッセージと一緒に sender MAC が繰り返し表示されます。
+
+![receiver MAC 未設定時の sender ログ](../images/lesson03/sender_receiver_mac_not_set_error.png)
+
+### 3. sender の RECEIVER_MAC を設定する
 
 sender のコードで `RECEIVER_MAC` を次の形式に変換して設定します。
 
@@ -129,9 +232,11 @@ sender のコードで `RECEIVER_MAC` を次の形式に変換して設定しま
 uint8_t RECEIVER_MAC[] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
 ```
 
+![sender の RECEIVER_MAC 設定](../images/lesson03/sender_receiver_mac_code.png)
+
 1文字でも違うと ESP-NOW は届きません。`0` と `O`、`1` と `I` の見間違いに注意してください。
 
-### 3. PLAYER_ID を設定する
+### 4. PLAYER_ID を設定する
 
 sender のコードで `PLAYER_ID` を参加者番号に設定します。
 
@@ -139,44 +244,54 @@ sender のコードで `PLAYER_ID` を参加者番号に設定します。
 const int PLAYER_ID = 1;  // 参加者ごとに異なる番号にする
 ```
 
+![sender の PLAYER_ID 設定](../images/lesson03/sender_player_id_code.png)
+
 同じ番号を複数人が使うと、勝者の識別ができなくなります。
 
-### 4. sender を書き込む
+### 5. sender を書き込む
 
 1. `firmware/esp32_unity_input/lesson03_espnow_play/sender/` を PlatformIO で開く
 2. `RECEIVER_MAC` と `PLAYER_ID` を設定した状態でビルドして書き込む
+
+書き込み後、Serial Monitor に次のような起動ログが出れば sender 側の準備は完了です。
+
+![receiver MAC 設定後の sender 起動ログ](../images/lesson03/sender_ready_after_receiver_mac_set.png)
 
 ## Unityシーン設定手順
 
 `Assets/_Contents/Scenes/Esp32SerialDemo.unity` を開きます。
 
-### 1. UI を作成する
+シーンには第3回用のUIとスクリプトが配置済みです。
 
-1. Hierarchy で右クリック → `UI > Canvas` を作成する（EventSystem も自動で追加される）
-2. Canvas を右クリック → `UI > Text - TextMeshPro` を作成し、名前を `WinnerText` にする
-3. Canvas を右クリック → `UI > Button - TextMeshPro` を作成し、名前を `ResetButton` にする
+![第3回 Unity シーン](../images/lesson03/unity_lesson03_scene.png)
 
-`WinnerText` の RectTransform を画面中央上部に配置し、フォントサイズを大きめに設定すると見やすくなります。
+| オブジェクト名 | 役割 |
+|---|---|
+| SerialController | receiver からの Serial 受信を担当する |
+| Lesson3QuizDemo | 最初に届いた `player` を勝者として記録する |
+| WinnerText | 勝者表示を行う |
+| ResetButton | 早押しの受付状態へ戻す |
 
-### 2. Lesson03QuizDemo を配置する
+### 1. Lesson03QuizDemo の接続を確認する
 
-1. Hierarchy で右クリック → `Create Empty` でオブジェクトを作成し、名前を `Lesson3QuizDemo` にする
-2. Inspector で `Add Component` → `Lesson03QuizDemo` を追加する
-3. `Winner Text` に `WinnerText` の TextMeshProUGUI コンポーネントをドラッグする
+Hierarchy で `Lesson3QuizDemo` を選択し、Inspector の `Lesson03QuizDemo` を確認します。
 
-### 3. イベントを接続する
+- `Winner Text` に `WinnerText` が設定されていること
+- `Serial Controller` に `SerialController` が設定されていること
+- `Waiting Message` が `Waiting...` になっていること
+- `Winner Message Prefix` が `Winner: Player ` になっていること
+
+### 2. イベント接続を確認する
 
 Hierarchy で `SerialController` を選択し、`Esp32SerialController` の `On Line Received` を確認します。
 
 - `Lesson03QuizDemo.HandleSerialLine` が登録されていること
-- 登録されていない場合は `+` ボタンで追加し、`Lesson3QuizDemo` オブジェクトの `HandleSerialLine` を選択する
 
 次に `ResetButton` を選択し、Button コンポーネントの `On Click` を確認します。
 
 - `Lesson03QuizDemo.ResetQuiz` が登録されていること
-- 登録されていない場合は `+` ボタンで追加し、`Lesson3QuizDemo` オブジェクトの `ResetQuiz` を選択する
 
-### 4. portName を設定する
+### 3. portName を設定する
 
 Hierarchy で `SerialController` を選択し、`portName` を receiver の USB ポート名に変更します。
 
@@ -204,7 +319,14 @@ Hierarchy で `SerialController` を選択し、`portName` を receiver の USB 
 1. Unity で Play を開始する
 2. sender のボタンを押す
 3. Unity の `WinnerText` に勝者が表示されることを確認する（例: `Winner: Player 1`）
-4. `ResetButton` を押すと `Waiting...` に戻ることを確認する
+4. 勝者の sender のLEDだけが光ることを確認する
+5. `ResetButton` を押すと `Waiting...` に戻り、LEDが消えることを確認する
+
+![Unity の勝者表示](../images/lesson03/unity_winner_player1.png)
+
+![勝者 sender の LED 点灯](../images/lesson03/winner_sender_led_on.jpg)
+
+![Reset 後の LED 消灯](../images/lesson03/sender_led_off_after_clear.jpg)
 
 ## 早押しクイズの流れ
 
@@ -214,36 +336,12 @@ Hierarchy で `SerialController` を選択し、`portName` を receiver の USB 
 3. receiverが player=ID,button=1 をUnityへ送る
 4. Unityが最初に届いたplayerを勝者として記録する
 5. Unity画面に勝者を表示する
-6. （発展）勝者のsenderだけLEDを光らせる
+6. Unityが `winner=ID` をreceiverへ送る
+7. receiverが勝者のsenderへ `led=1` を送る
+8. `ResetButton` でUnityが `clear_leds` を送り、receiverが全senderへ `led=0` を送る
 ```
 
-## 動作確認の流れ
-
-### 1. sender → receiver の通信を確認する
-
-Unityを使わずにESP-NOW通信だけを先に確認します。
-
-1. receiverをPCにUSB接続する
-2. receiverのSerial Monitorを開く
-3. senderのボタンを押す
-4. receiver側に `player=N,button=1` が表示されることを確認する
-
-### 2. receiver → Unity への通信を確認する
-
-1. receiverのSerial Monitorを閉じる
-2. `unity/Esp32UnityWorkshop/` を開く
-3. Unity側でreceiverのSerial ポート名を設定する
-4. Unity を Play する
-5. senderのボタンを押す
-6. Unity上で反応することを確認する
-
 ## 発展
-
-### 勝者senderへLEDを返す
-
-Unity側で勝者が決まったら `led=1` をSerial送信します。
-receiverが受け取り、ESP-NOWで該当senderへ転送します。
-senderはLEDを点灯させます。
 
 ### 複数senderのID管理
 

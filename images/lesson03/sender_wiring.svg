@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">Sender wiring</title>
+  <desc id="desc">Button is connected between D0 and GND. LED with resistor is connected from D1 to GND.</desc>
+  <defs>
+    <style>
+      .board { fill: #edf2f7; stroke: #2d3748; stroke-width: 3; rx: 24; }
+      .pin { fill: #ffffff; stroke: #2d3748; stroke-width: 3; }
+      .wire { stroke: #2d3748; stroke-width: 5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .gnd { stroke: #4a5568; stroke-width: 4; }
+      .label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 28px; font-weight: 700; fill: #1a202c; }
+      .small { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 21px; fill: #2d3748; }
+      .part { fill: #ffffff; stroke: #2d3748; stroke-width: 3; rx: 12; }
+      .led { fill: #fed7d7; stroke: #c53030; stroke-width: 3; }
+      .resistor { fill: #fefcbf; stroke: #975a16; stroke-width: 3; }
+    </style>
+  </defs>
+
+  <rect x="60" y="60" width="260" height="300" class="board"/>
+  <text x="190" y="108" text-anchor="middle" class="label">XIAO ESP32C6</text>
+
+  <circle cx="320" cy="160" r="16" class="pin"/>
+  <text x="282" y="168" text-anchor="end" class="small">D0</text>
+  <circle cx="320" cy="250" r="16" class="pin"/>
+  <text x="282" y="258" text-anchor="end" class="small">D1</text>
+  <circle cx="190" cy="360" r="16" class="pin"/>
+  <text x="190" y="396" text-anchor="middle" class="small">GND</text>
+
+  <rect x="455" y="125" width="170" height="70" class="part"/>
+  <text x="540" y="168" text-anchor="middle" class="label">Button</text>
+  <path d="M320 160 L455 160" class="wire"/>
+  <path d="M625 160 L760 160 L760 330 L190 330 L190 360" class="wire"/>
+
+  <rect x="455" y="225" width="130" height="60" class="resistor"/>
+  <text x="520" y="263" text-anchor="middle" class="small">Resistor</text>
+  <circle cx="690" cy="255" r="34" class="led"/>
+  <text x="690" y="263" text-anchor="middle" class="small">LED</text>
+  <path d="M320 250 L455 250" class="wire"/>
+  <path d="M585 250 L656 250" class="wire"/>
+  <path d="M724 255 L805 255 L805 330" class="wire"/>
+
+  <line x1="155" y1="330" x2="845" y2="330" class="gnd"/>
+  <line x1="760" y1="340" x2="760" y2="360" class="gnd"/>
+  <line x1="742" y1="360" x2="778" y2="360" class="gnd"/>
+  <line x1="750" y1="372" x2="770" y2="372" class="gnd"/>
+  <line x1="805" y1="340" x2="805" y2="360" class="gnd"/>
+  <line x1="787" y1="360" x2="823" y2="360" class="gnd"/>
+  <line x1="795" y1="372" x2="815" y2="372" class="gnd"/>
+
+  <text x="540" y="52" text-anchor="middle" class="small">D0 to GND: button input / D1 to resistor to LED to GND: optional feedback</text>
+</svg>
