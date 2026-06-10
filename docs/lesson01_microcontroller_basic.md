@@ -28,7 +28,17 @@ VScodeを開いて拡張機能を入れましょう。
 1. 何も開いていない新しいVScodeのウィンドウを出します。
 1. ここで、拡張機能として左側にアリマークが増えるので、押します。
 1. PlatformIOのPIO Homeのタブが出てくると思う(出てこなければOpen)のでOpenボタンを押します。
+
+![PlatformIOのOpen](../images/lesson01/platformIO-vscode.png "PlatformIOのOpen")
+
+PIO Homeが開いたらOpen Projectを押します。
+
+![PIO HomeのOpen Project](../images/lesson01/platformIO-open.png "PIO HomeのOpen Project")
+
 1. ここで、GitHubから持ってきた中の以下のフォルダを選択してOpenを押します。```esp32-unity-workshop\firmware\lesson01_microcontroller_basic```
+
+![PlatformIOで開くフォルダ](../images/lesson01/platformIO-open2.png "PlatformIOで開くフォルダ")
+
 こっから**めちゃくちゃ**時間がかかるので違う作業に移ります。
 
 # マイコンのはんだ付け
