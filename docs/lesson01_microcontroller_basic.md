@@ -45,13 +45,15 @@ VScodeを開いて拡張機能を入れましょう。
 - 200Ω以上の抵抗なんでも
 - ジャンパワイヤー
 
-回路図は以下のようになります。D0とD3はマイコンのピン名で、D0がマイコンのRって書いてあるところの近くの一番端で、D0を端から1番目としたとき、D3は端から4番目です。[これ](https://wiki.seeedstudio.com/ja/XIAO_ESP32C3_Getting_Started/#%E8%A1%A8%E9%9D%A2)を見ると分かります。
+回路図は以下のようになります。一応、回路図は上の方が電圧高いです。
+LEDは足の長い方が電圧高い方です。
+D0とD3はマイコンのピン名で、D0がマイコンのRって書いてあるところの近くの一番端で、D0を端から1番目としたとき、D3は端から4番目です。[これ](https://wiki.seeedstudio.com/ja/XIAO_ESP32C3_Getting_Started/#%E8%A1%A8%E9%9D%A2)を見ると分かります。
 
-![回路図](https://github.com/piramura/esp32-unity-workshop/tree/develop/images/lesson01/kairozu.png "回路図")
+![回路図](../images/lesson01/kairozu.png "回路図")
 
 サンプルはこれです。
 
-![回路サンプル](https://github.com/piramura/esp32-unity-workshop/tree/develop/images/lesson01/IMG_7145.JPG "サンプル")
+![回路サンプル](../images/lesson01/IMG_7145.JPG "サンプル")
 
 ジャンパワイヤを使ってどんどんつなげてみましょう。一応チェックしてから電源入れるので見せてください。
 
