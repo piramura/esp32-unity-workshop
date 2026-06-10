@@ -46,4 +46,4 @@ VScodeを開いて拡張機能を入れましょう。
 - ジャンパワイヤー
 
 回路図は以下のようになります。
-![回路図](https://github.com/piramura/esp32-unity-workshop/tree/develop/images/lesson01/kairozu.png "サンプル")
+![回路図](https://github.com/piramura/esp32-unity-workshop/blob/origin/lesson1/images/lesson01/kairozu.png "サンプル")
