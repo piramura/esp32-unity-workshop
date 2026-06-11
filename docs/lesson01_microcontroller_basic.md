@@ -28,7 +28,17 @@ VScodeを開いて拡張機能を入れましょう。
 1. 何も開いていない新しいVScodeのウィンドウを出します。
 1. ここで、拡張機能として左側にアリマークが増えるので、押します。
 1. PlatformIOのPIO Homeのタブが出てくると思う(出てこなければOpen)のでOpenボタンを押します。
+
+![PlatformIOのOpen](../images/lesson01/platformIO-vscode.png "PlatformIOのOpen")
+
+PIO Homeが開いたらOpen Projectを押します。
+
+![PIO HomeのOpen Project](../images/lesson01/platformIO-open.png "PIO HomeのOpen Project")
+
 1. ここで、GitHubから持ってきた中の以下のフォルダを選択してOpenを押します。```esp32-unity-workshop\firmware\lesson01_microcontroller_basic```
+
+![PlatformIOで開くフォルダ](../images/lesson01/platformIO-open2.png "PlatformIOで開くフォルダ")
+
 こっから**めちゃくちゃ**時間がかかるので違う作業に移ります。
 
 # マイコンのはんだ付け
@@ -47,7 +57,7 @@ VScodeを開いて拡張機能を入れましょう。
 
 回路図は以下のようになります。一応、回路図は上の方が電圧高いです。
 LEDは足の長い方が電圧高い方です。
-D0とD3はマイコンのピン名で、D0がマイコンのRって書いてあるところの近くの一番端で、D0を端から1番目としたとき、D3は端から4番目です。[これ](https://wiki.seeedstudio.com/ja/XIAO_ESP32C3_Getting_Started/#%E8%A1%A8%E9%9D%A2)を見ると分かります。
+D0とD3はマイコンのピン名です。この教材では、ボタンをD0、LEDをD3につなぎます。ピンの位置は[XIAO ESP32C6のピンマップ](../images/lesson02/XIAO_ESP32-C6_front_pinout.png)を見ると分かります。
 
 ![回路図](../images/lesson01/kairozu.png "回路図")
 
