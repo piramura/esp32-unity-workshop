@@ -57,7 +57,7 @@ PIO Homeが開いたらOpen Projectを押します。
 
 回路図は以下のようになります。一応、回路図は上の方が電圧高いです。
 LEDは足の長い方が電圧高い方です。
-D0とD3はマイコンのピン名で、D0がマイコンのRって書いてあるところの近くの一番端で、D0を端から1番目としたとき、D3は端から4番目です。[これ](https://wiki.seeedstudio.com/ja/XIAO_ESP32C3_Getting_Started/#%E8%A1%A8%E9%9D%A2)を見ると分かります。
+D0とD3はマイコンのピン名です。この教材では、ボタンをD0、LEDをD3につなぎます。ピンの位置は[XIAO ESP32C6のピンマップ](../images/lesson02/XIAO_ESP32-C6_front_pinout.png)を見ると分かります。
 
 ![回路図](../images/lesson01/kairozu.png "回路図")
 
@@ -83,8 +83,8 @@ PlatformIOを動かしてるときだけVScodeの左下にいろんなマーク�
 #include <Arduino.h>
 
 // LED用とボタン用のピン番号を定義
-const int pinLed = D0;
-const int pinButton = D3;
+const int pinLed = D3;
+const int pinButton = D0;
 
 void setup() {
   // baud rateを決める関数
