@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
-const int pinLed = D0;
-const int pinButton = D3;
+const int pinLed = D3;
+const int pinButton = D0;
 
 void setup() {
   Serial.begin(115200);
