@@ -233,7 +233,7 @@ button=1 のとき
 
 ## Unityシーン設定手順
 
-`unity/Esp32UnityWorkshop/` を Unity で開き、`Assets/_Contents/Scenes/Esp32SerialDemo.unity` をダブルクリックして読み込みます。
+`unity/Esp32UnityWorkshop/` を Unity で開き、`Assets/_Contents/Scenes/lesson2.unity` をダブルクリックして読み込みます。
 
 Unityプロジェクトを開く手順:
 
