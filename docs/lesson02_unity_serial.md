@@ -235,6 +235,8 @@ button=1 のとき
 
 `unity/Esp32UnityWorkshop/` を Unity で開き、`Assets/_Contents/Scenes/lesson2.unity` をダブルクリックして読み込みます。
 
+![lesson2 シーンの場所](../images/lesson02/lesson2path.png)
+
 Unityプロジェクトを開く手順:
 
 1. Unity Hub を起動する
@@ -250,6 +252,10 @@ Unityプロジェクトを開く手順:
 | SerialController | Serial通信の送受信を担当する |
 | Lesson2Demo | ボタン入力を受け取り、Cubeの色を変える |
 | ButtonStateCube | 色が変わるCube |
+
+補助サンプルとして `Lesson02SerialTemplate.cs` も用意しています。
+これは ESP32 から届いた `button=0` / `button=1` を Unity Console に表示するだけの雛形です。
+色を変えたり LED を制御したりする前に、まず「Unity に文字が届いている」ことを確認したい場合に使います。
 
 ### 1. portName を設定する
 
